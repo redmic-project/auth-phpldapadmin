@@ -9,6 +9,7 @@ services:
       PHPLDAPADMIN_LDAP_CLIENT_TLS:
     networks:
       auth-net:
+      traefik-net:
     volumes:
       - data-vol:/var/www/phpldapadmin
     deploy:
@@ -34,4 +35,9 @@ networks:
   auth-net:
     name: ${AUTH_NET_NAME:-auth-net}
     driver: ${AUTH_NET_DRIVER:-overlay}
+    external: true
+
+  traefik-net:
+    name: ${TRAEFIK_NET_NAME:-traefik-net}
+    driver: ${TRAEFIK_NET_DRIVER:-overlay}
     external: true
