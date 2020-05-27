@@ -1,0 +1,43 @@
+version: '3.5'
+
+services:
+  phpldapadmin:
+    image: ${IMAGE_NAME:-osixia/phpldapadmin}:${IMAGE_TAG:-latest}
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS:
+      PHPLDAPADMIN_HTTPS:
+      PHPLDAPADMIN_LDAP_CLIENT_TLS:
+    networks:
+      auth-net:
+      traefik-net:
+    volumes:
+      - data-vol:/var/www/phpldapadmin
+    deploy:
+      mode: replicated
+      replicas: ${REPLICAS:-1}
+      restart_policy:
+        delay: ${RESTART_DELAY:-10s}
+      update_config:
+        delay: ${UPDATE_DELAY:-1m}
+      labels:
+        traefik.frontend.rule: Host:${TRAEFIK_SUBDOMAIN:-phpldapadmin}.${PUBLIC_HOSTNAME}
+        traefik.backend: phpldapadmin
+        traefik.port: '80'
+      resources:
+        limits:
+          cpus: '${RESOURCES_LIMITS_CPUS:-0.1}'
+          memory: ${RESOURCES_LIMITS_MEMORY:-64M}
+        reservations:
+          cpus: '${RESOURCES_RESERVATIONS_CPUS:-0.001}'
+          memory: ${RESOURCES_RESERVATIONS_MEMORY:-40M}
+
+networks:
+  auth-net:
+    name: ${AUTH_NET_NAME:-auth-net}
+    driver: ${AUTH_NET_DRIVER:-overlay}
+    external: true
+
+  traefik-net:
+    name: ${TRAEFIK_NET_NAME:-traefik-net}
+    driver: ${TRAEFIK_NET_DRIVER:-overlay}
+    external: true
