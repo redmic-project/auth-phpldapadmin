@@ -1,12 +1,10 @@
-version: '3.5'
-
-services:
-  phpldapadmin:
-    deploy:
-      placement:
-        constraints:
-          - node.hostname == ${PLACEMENT_CONSTRAINTS_NODE_HOSTNAME:-hostname}
+version: '3.9'
 
 volumes:
   data-vol:
     name: ${DATA_VOL_NAME}
+    driver: local
+    driver_opts:
+      type: ${VOL_TYPE}
+      o: addr=${VOL_ADDR},${VOL_OPTS}
+      device: ${DATA_VOL_DEVICE:-:/openldap-data-vol/}
