@@ -20,9 +20,10 @@ services:
       update_config:
         delay: ${UPDATE_DELAY:-1m}
       labels:
-        traefik.frontend.rule: Host:${TRAEFIK_SUBDOMAIN:-phpldapadmin}.${PUBLIC_HOSTNAME}
-        traefik.backend: phpldapadmin
-        traefik.port: '80'
+        traefik.enable: 'true'
+        traefik.http.routers.phpldapadmin.entrypoints: ${TRAEFIK_ENTRYPOINT:-http}
+        traefik.http.routers.phpldapadmin.rule: Host(`${TRAEFIK_SUBDOMAIN:-phpldapadmin}.${PUBLIC_HOSTNAME}`)
+        traefik.http.services.phpldapadmin.loadbalancer.server.port: 80
       resources:
         limits:
           cpus: '${RESOURCES_LIMITS_CPUS:-0.1}'
